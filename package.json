@@ -10,6 +10,8 @@
   "author": "Ethan",
   "license": "ISC",
   "dependencies": {
-    "koa": "^2.5.3"
+    "ejs": "^2.6.1",
+    "koa": "^2.5.3",
+    "pug": "^2.0.3"
   }
 }
