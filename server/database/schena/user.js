@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const Schema = mongoose.Schema
 const Mixed = Schema.Types.Mixed
 const SALT_WORK_FACTOR = 10
@@ -8,10 +9,12 @@ const LOCK_TIME = 2 * 60 * 60 * 1000
 const userSchema = new Schema({
   username: {
     unique: true,
+    required: true,
     type: String
   },
   email: {
     unique: true,
+    required: true,
     type: String
   },
   password: {
@@ -19,6 +22,11 @@ const userSchema = new Schema({
     type: String
   },
   lockUntil: Number,
+  loginAttempts: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   meta: {
     createdAt: {
       type: Date,
@@ -65,7 +73,7 @@ userSchema.pre('save', next => {
   next()
 })
 
-// 给userSchema上挂在一些自定义密码
+// 给userSchema上挂载实例方法
 userSchema.methods = {
   // 对用户传递过来的明文密码和数据库加密后的密码进行比对
   comparePassword: (_password, password) => {
