@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const db = 'mongodb://localhost/my_database'
+const glob = require('glob')
+const { resolve } = require('path')
+exports.initSchemas = () => {
+  glob.sync(resolve(__dirname, './schema', '**/*.js')).forEach(require)
+}
 exports.connect = () => {
   let maxConnectTimes = 0
   return new Promise((resolve, reject) => {
