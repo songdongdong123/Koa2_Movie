@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 const Schema = mongoose.Schema
 const Mixed = Schema.Types.Mixed
 const SALT_WORK_FACTOR = 10
@@ -40,12 +40,12 @@ const userSchema = new Schema({
 })
 
 //增加虚拟字段（）虚拟字段并不会每次都网数据库中更新
-userSchema.virtual('isLocked').get(() => {
+userSchema.virtual('isLocked').get(function () {
   return !!this.lockUntil && this.lockUntil > Date.now
 })
 
 // 中间件
-userSchema.pre('save', next => {
+userSchema.pre('save', function (next) {
   // 判断是不是新增的数据
   if (this.isNew) {
     // 如果是就将createdAt和updatedAt设置为当前时间戳
@@ -56,7 +56,7 @@ userSchema.pre('save', next => {
   }
   next()
 })
-userSchema.pre('save', next => {
+userSchema.pre('save', function (next) {
   // 实现密码的中间件，主要作用是增加密码的复杂度
   // isModified是mongoose提供的一个判断字段是否被改动的方法
   if (!user.isModified(password)) return next()

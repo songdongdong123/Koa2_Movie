@@ -1,11 +1,15 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const Mixed = Schema.Types.Mixed
+const {ObjectId,Mixed} = Schema.Types
 
 const movieSchema = new Schema({
   doubanId: {
     unique: true,
     type: String
+  },
+  category: {
+    type: ObjectId,
+    ref: 'Catgory'
   },
   rate: Number,
   title: String,
@@ -30,7 +34,7 @@ const movieSchema = new Schema({
   }
 })
 
-movieSchema.pre('save', next => {
+movieSchema.pre('save', function (next) {
   if (this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now
   } else {
